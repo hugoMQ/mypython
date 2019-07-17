@@ -10,10 +10,8 @@
 3. get方法查询用户信息（模糊查询）
 要求: 需要包含异常判断,前期可以先用pymysql实现
 '''
-import pymysql
-import os
 import json
-from flask_cors import *
+import pymysql
 from flask import Flask, request
 
 app = Flask(__name__)
@@ -21,12 +19,12 @@ app = Flask(__name__)
 
 @app.route('/select', methods=['GET'])
 def findUser():
-    arg = request.args.get('name')
+    arg = request.args.get('name').strip()
     # 编写sql 查询语句
     if arg == None:
         sql_select = "select * from user "
     else:
-         sql_select = "select * from user where name like '%%%s%%'" % (arg)
+         sql_select = "select * from user where name like '%%%s%%'"%(arg)
     db = pymysql.connect(host="localhost", user="root", password="root", db="mydb", port=3306)
     # 使用cursor()方法获取操作游标
     cur = db.cursor()
