@@ -4,11 +4,10 @@
 # @Author  : yuguo
 # coding:utf-8
 # 一个基于Flask和SQLAlchemy+SQLite的极简博客应用
+from flask import Flask, request, render_template, redirect
 from sqlalchemy.ext.declarative import declarative_base
-import json
-import pymysql
-from flask import Flask, request,render_template,redirect
 from sqlalchemy.orm import sessionmaker
+
 # 实例化官宣模型 - Base 就是 ORM 模型
 Base = declarative_base()
 
@@ -43,6 +42,20 @@ def home():
     # 渲染首页HTML模板文件
     return render_template('home.html')
 
+@app.route('/blogs',methods = ['GET'])
+def list_notes():
+    '''
+    查询博文列表
+    '''
+    Session = sessionmaker(engine)
+    # 打开会话对象 Session
+    db_session = Session()
+    blogs = db_session.query(Blog).all()
+
+    # 渲染博文列表页面目标文件，传入blogs参数
+    #render_template的功能是对先引入index.html，同时根据后面传入的参数，对html进行修改渲染
+    return render_template('list_blogs.html',blogs = blogs)
+
 @app.route('/blogs/create', methods=['GET', 'POST'])
 def create_blog():
     '''
@@ -68,18 +81,6 @@ def create_blog():
         # 创建完成之后重定向到博文列表页面
         return redirect('/blogs')
 
-@app.route('/blogs',methods = ['GET'])
-def list_notes():
-    '''
-    查询博文列表
-    '''
-    Session = sessionmaker(engine)
-    # 打开会话对象 Session
-    db_session = Session()
-    blogs = db_session.query(Blog).all()
-
-    # 渲染博文列表页面目标文件，传入blogs参数
-    return render_template('list_blogs.html',blogs = blogs)
 
 @app.route('/blogs/<id>',methods = ['GET','DELETE'])
 def query_note(id):
