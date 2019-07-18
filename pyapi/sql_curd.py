@@ -90,4 +90,5 @@ def addUser():
 
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5590)
+    #开启debug模式的好处在于，每次对源代码的修改，保存一下刷新页面都可以立即生效，而不用重启程序。
+    app.run(host='127.0.0.1', port=5590,debug=True)
